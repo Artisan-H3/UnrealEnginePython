@@ -16,6 +16,16 @@ Funny snippets for working with StaticMesh and SkeletalMesh assets: https://gith
 
 More tutorials: https://github.com/20tab/UnrealEnginePython/tree/master/tutorials
 
+# Project Status (IMPORTANT)
+
+Currently (as april 2020) the project is on hold: between 2016 and 2018 20tab invested lot of resources in it but unfortunately epic (during 2018) decided to suddenly release its own implementation and the request made for a megagrant in 2019 by the original plugin author was rejected too.
+
+As this plugin (still) has way more features than the Epic one and many contributors, **we are currently looking for new maintainers** helping us to keep it alive, checking PR and issues. If you are interested in working on it a few hours a week, drop us a line at info@20tab.com to discuss about it.
+
+If you are interested in game logic scripting/modding in Unreal Engine 4 consider giving a look at the LuaMachine project (https://github.com/rdeioris/LuaMachine/).
+
+The plugin should work up to unreal engine version 4.23 and there are forks/pull requests for 4.24. Since 4.25 Epic refactored the UProperty subsystem, so if you want to port the plugin to a version >= 4.25 you should make a lot of search & replace (basically renaming UProperty to FProperty and Cast to CastField should be enough)
+
 # How and Why ?
 
 This is a plugin embedding a whole Python VM (versions 3.x [the default and suggested one] and 2.7) In Unreal Engine 4 (both the editor and runtime).
@@ -36,7 +46,7 @@ Once the plugin is installed and enabled, you get access to the 'PythonConsole' 
 
 All of the exposed engine features are under the 'unreal_engine' virtual module (it is completely coded in c into the plugin, so do not expect to run 'import unreal_engine' from a standard python shell)
 
-The minimal supported Unreal Engine version is 4.12, while the latest is 4.23
+The minimal supported Unreal Engine version is 4.12, while the latest is 4.24
 
 We support official python.org releases as well as IntelPython and Anaconda distributions.
 

@@ -34,6 +34,7 @@ public class UnrealEnginePython : ModuleRules
     //Swap python versions here
     private string PythonType = "Python36";
     //private string PythonType = "python27";
+    //private string pythonHome = "/usr/local/include/python3.6;/usr/local/lib/libpython3.6.so";
 
     private string ThirdPartyPath
     {
@@ -135,7 +136,7 @@ public class UnrealEnginePython : ModuleRules
 
 	private string[] windowsKnownPaths =
     {
-       // "C:/Program Files/Python37",
+        "C:/Program Files/Python37",
         "C:/Program Files/Python36",
         "C:/Program Files/Python35",
         "C:/Python27",
@@ -212,8 +213,9 @@ public class UnrealEnginePython : ModuleRules
     {
 
         PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
+        PublicDefinitions.Add("WITH_UNREALENGINEPYTHON=1"); // fixed
         string enableUnityBuild = System.Environment.GetEnvironmentVariable("UEP_ENABLE_UNITY_BUILD");
-        bFasterWithoutUnity = string.IsNullOrEmpty(enableUnityBuild);
+        bUseUnity = string.IsNullOrEmpty(enableUnityBuild);
 
         PublicIncludePaths.AddRange(
             new string[] {
@@ -403,14 +405,14 @@ public class UnrealEnginePython : ModuleRules
         }
 #if WITH_FORWARDED_MODULE_RULES_CTOR
         else if (Target.Platform == UnrealTargetPlatform.Android)
-        {
+		{
             PublicIncludePaths.Add(System.IO.Path.Combine(ModuleDirectory, "../../android/python35/include"));
-            PublicLibraryPaths.Add(System.IO.Path.Combine(ModuleDirectory, "../../android/armeabi-v7a"));
+            PublicAdditionalLibraries.Add(System.IO.Path.Combine(ModuleDirectory, "../../android/armeabi-v7a"));
             PublicAdditionalLibraries.Add("python3.5m");
 
             string APLName = "UnrealEnginePython_APL.xml";
-            string RelAPLPath = Utils.MakePathRelativeTo(System.IO.Path.Combine(ModuleDirectory, APLName), Target.RelativeEnginePath);
-            AdditionalPropertiesForReceipt.Add("AndroidPlugin", RelAPLPath);
+            string RelAPLPath = Utils.MakePathRelativeTo(ModuleDirectory, Target.RelativeEnginePath);
+            AdditionalPropertiesForReceipt.Add("AndroidPlugin", Path.Combine(RelAPLPath, APLName));
         }
 #endif
     }
