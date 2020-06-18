@@ -1891,7 +1891,39 @@ ue_PyUObject* ue_get_python_uobject(UObject* ue_obj)
 		}
 	return ret;
 
+}
+
+ue_PyUObject* ue_get_python_fieldclass(FFieldClass* ue_field_class)
+{
+	//if (!ue_obj)
+		return nullptr;
+	//Todo: fill this function
+	/*ue_PyUObject* ret = FUnrealEnginePythonHouseKeeper::Get()->GetPyUObject(ue_obj);
+	if (!ret)
+	{
+		if (!ue_obj->IsValidLowLevel() || ue_obj->IsPendingKillOrUnreachable())
+			return nullptr;
+
+		ue_PyUObject* ue_py_object = (ue_PyUObject*)PyObject_New(ue_PyUObject, &ue_PyUObjectType);
+		if (!ue_py_object)
+		{
+			return nullptr;
+		}
+		ue_py_object->ue_object = ue_obj;
+		ue_py_object->py_proxy = nullptr;
+		ue_py_object->auto_rooted = 0;
+		ue_py_object->py_dict = PyDict_New();
+		ue_py_object->owned = 0;
+
+		FUnrealEnginePythonHouseKeeper::Get()->RegisterPyUObject(ue_obj, ue_py_object);
+
+#if defined(UEPY_MEMORY_DEBUG)
+		UE_LOG(LogPython, Warning, TEXT("CREATED UPyObject at %p for %p %s"), ue_py_object, ue_obj, *ue_obj->GetName());
+#endif
+		return ue_py_object;
 	}
+	return ret;*/
+}
 
 ue_PyUObject* ue_get_python_uobject_inc(UObject* ue_obj)
 {
@@ -3073,20 +3105,12 @@ PyObject* ue_unbind_pyevent(ue_PyUObject* u_obj, FString event_name, PyObject* p
 		UPythonDelegate* py_delegate = FUnrealEnginePythonHouseKeeper::Get()->FindDelegate(u_obj->ue_object, py_callable);
 		if (py_delegate != nullptr)
 		{
-#if ENGINE_MINOR_VERSION < 23
-			FMulticastScriptDelegate multiscript_delegate = casted_prop->GetPropertyValue_InContainer(u_obj->ue_object);
-#else
 			FMulticastScriptDelegate multiscript_delegate = *casted_prop->GetMulticastDelegate(u_obj->ue_object);
-#endif
 
 			multiscript_delegate.Remove(py_delegate, FName("PyFakeCallable"));
 
 			// re-assign multicast delegate
-#if ENGINE_MINOR_VERSION < 23
-			casted_prop->SetPropertyValue_InContainer(u_obj->ue_object, multiscript_delegate);
-#else
 			casted_prop->SetMulticastDelegate(u_obj->ue_object, multiscript_delegate);
-#endif
 		}
 	}
 	else if (auto casted_prop_delegate = Cast<FDelegateProperty>(u_property))
@@ -3119,11 +3143,7 @@ PyObject* ue_bind_pyevent(ue_PyUObject* u_obj, FString event_name, PyObject* py_
 
 	if (auto casted_prop = Cast<FMulticastDelegateProperty>(u_property))
 	{
-#if ENGINE_MINOR_VERSION < 23
-		FMulticastScriptDelegate multiscript_delegate = casted_prop->GetPropertyValue_InContainer(u_obj->ue_object);
-#else
 		FMulticastScriptDelegate multiscript_delegate = *casted_prop->GetMulticastDelegate(u_obj->ue_object);
-#endif
 
 		FScriptDelegate script_delegate;
 		UPythonDelegate* py_delegate = FUnrealEnginePythonHouseKeeper::Get()->NewDelegate(u_obj->ue_object, py_callable, casted_prop->SignatureFunction);
@@ -3134,11 +3154,7 @@ PyObject* ue_bind_pyevent(ue_PyUObject* u_obj, FString event_name, PyObject* py_
 		multiscript_delegate.Add(script_delegate);
 
 		// re-assign multicast delegate
-#if ENGINE_MINOR_VERSION < 23
-		casted_prop->SetPropertyValue_InContainer(u_obj->ue_object, multiscript_delegate);
-#else
 		casted_prop->SetMulticastDelegate(u_obj->ue_object, multiscript_delegate);
-#endif
 	}
 	else if (auto casted_prop_delegate = Cast<FDelegateProperty>(u_property))
 	{
@@ -3177,10 +3193,6 @@ UFunction* unreal_engine_add_function(UClass* u_class, char* name, PyObject* py_
 
 	UPythonFunction* function = NewObject<UPythonFunction>(u_class, UTF8_TO_TCHAR(name), RF_Public | RF_Transient | RF_MarkAsNative);
 	function->SetPyCallable(py_callable);
-
-#if ENGINE_MINOR_VERSION < 18
-	function->RepOffset = MAX_uint16;
-#endif
 	function->ReturnValueOffset = MAX_uint16;
 	function->FirstPropertyToInit = NULL;
 	function->Script.Add(EX_EndFunctionParms);

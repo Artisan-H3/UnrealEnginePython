@@ -95,7 +95,7 @@ int unreal_engine_py_init(ue_PyUObject *self, PyObject *args, PyObject *kwds)
 					}
 					else
 					{
-						if (!py_ue_add_property(self, Py_BuildValue("(OsO)", (PyObject *)ue_get_python_uobject(FObjectProperty::StaticClass()), class_key, value)))
+						if (!py_ue_add_property(self, Py_BuildValue("(OsO)", (PyObject *)ue_get_python_fieldclass(FObjectProperty::StaticClass()), class_key, value)))
 						{
 							unreal_engine_py_log_error();
 							return -1;
@@ -105,7 +105,7 @@ int unreal_engine_py_init(ue_PyUObject *self, PyObject *args, PyObject *kwds)
 				}
 				else if (py_obj->ue_object->IsA<UScriptStruct>())
 				{
-					if (!py_ue_add_property(self, Py_BuildValue("(OsO)", (PyObject *)ue_get_python_uobject(FStructProperty::StaticClass()), class_key, value)))
+					if (!py_ue_add_property(self, Py_BuildValue("(OsO)", (PyObject *)ue_get_python_fieldclass(FStructProperty::StaticClass()), class_key, value)))
 					{
 						unreal_engine_py_log_error();
 						return -1;
@@ -138,7 +138,7 @@ int unreal_engine_py_init(ue_PyUObject *self, PyObject *args, PyObject *kwds)
 
 							else
 							{
-								if (!py_ue_add_property(self, Py_BuildValue("([O]sO)", (PyObject *)ue_get_python_uobject(FObjectProperty::StaticClass()), class_key, first_item)))
+								if (!py_ue_add_property(self, Py_BuildValue("([O]sO)", (PyObject *)ue_get_python_fieldclass(FObjectProperty::StaticClass()), class_key, first_item)))
 								{
 									unreal_engine_py_log_error();
 									return -1;
@@ -148,7 +148,7 @@ int unreal_engine_py_init(ue_PyUObject *self, PyObject *args, PyObject *kwds)
 						}
 						else if (py_obj->ue_object->IsA<UScriptStruct>())
 						{
-							if (!py_ue_add_property(self, Py_BuildValue("([O]sO)", (PyObject *)ue_get_python_uobject(FStructProperty::StaticClass()), class_key, first_item)))
+							if (!py_ue_add_property(self, Py_BuildValue("([O]sO)", (PyObject *)ue_get_python_fieldclass(FStructProperty::StaticClass()), class_key, first_item)))
 							{
 								unreal_engine_py_log_error();
 								return -1;
@@ -183,12 +183,12 @@ int unreal_engine_py_init(ue_PyUObject *self, PyObject *args, PyObject *kwds)
 							}
 							else
 							{
-								first_item = (PyObject *)ue_get_python_uobject(FObjectProperty::StaticClass());
+								first_item = (PyObject *)ue_get_python_fieldclass(FObjectProperty::StaticClass());
 							}
 						}
 						else if (py_obj->ue_object->IsA<UScriptStruct>())
 						{
-							first_item = (PyObject *)ue_get_python_uobject(FStructProperty::StaticClass());
+							first_item = (PyObject *)ue_get_python_fieldclass(FStructProperty::StaticClass());
 						}
 
 						ue_PyUObject *py_obj2 = (ue_PyUObject *)py_value;
@@ -201,12 +201,12 @@ int unreal_engine_py_init(ue_PyUObject *self, PyObject *args, PyObject *kwds)
 							}
 							else
 							{
-								second_item = (PyObject *)ue_get_python_uobject(FObjectProperty::StaticClass());
+								second_item = (PyObject *)ue_get_python_fieldclass(FObjectProperty::StaticClass());
 							}
 						}
 						else if (py_obj2->ue_object->IsA<UScriptStruct>())
 						{
-							second_item = (PyObject *)ue_get_python_uobject(FStructProperty::StaticClass());
+							second_item = (PyObject *)ue_get_python_fieldclass(FStructProperty::StaticClass());
 						}
 
 						if (!py_ue_add_property(self, Py_BuildValue("([OO]sOO)", first_item, second_item, class_key, py_key, py_value)))
