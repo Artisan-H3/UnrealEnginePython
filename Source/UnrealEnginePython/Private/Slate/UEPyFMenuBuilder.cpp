@@ -115,9 +115,6 @@ static PyObject* py_ue_fmenu_builder_add_menu_separator(ue_PyFMenuBuilder* self,
 }
 
 #if WITH_EDITOR
-
-#include "ContentBrowserModule.h"
-
 static PyObject* py_ue_fmenu_builder_add_asset_actions(ue_PyFMenuBuilder* self, PyObject* args)
 {
 	PyObject* py_assets;
@@ -143,10 +140,8 @@ static PyObject* py_ue_fmenu_builder_add_asset_actions(ue_PyFMenuBuilder* self, 
 	Py_DECREF(py_assets);
 
 	FAssetToolsModule& AssetToolsModule = FModuleManager::LoadModuleChecked<FAssetToolsModule>(TEXT("AssetTools"));
-
-	FContentBrowserModule& ContentBrowserModule = FModuleManager::LoadModuleChecked<FContentBrowserModule>("ContentBrowser");
-	TArray<FContentBrowserMenuExtender_SelectedAssets>& AssetMenuExtenderDelegates = ContentBrowserModule.GetAllAssetViewContextMenuExtenders();
-	if (AssetMenuExtenderDelegates.Num() > 0)
+	bool addedSomething = AssetToolsModule.Get().GetAssetActions(u_objects, self->menu_builder, true);
+	if (addedSomething)
 	{
 		Py_RETURN_TRUE;
 	}
